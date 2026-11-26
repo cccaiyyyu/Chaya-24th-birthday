@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday！ Chaya Chen生日快樂啊！</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Canvas Confetti 彩帶特效庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- 引入 Google Fonts (Noto Sans TC & Playfair Display) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        cream: '#F8FBFF',      // 清新冰川白背景
+                        blush: '#E1F0FF',      // 柔和淺水藍
+                        roseGold: '#6BA4E8',   // 晴空藍主色
+                        deepRose: '#2B6CB0',   // 沉穩海鹽深藍
+                        champagne: '#D6E8FA',  // 霧藍邊框與點綴
+                        charcoal: '#2D3748'    // 柔和深藍灰文字
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'flicker': 'flicker 1.2s infinite alternate',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        flicker: {
+                            '0%': { transform: 'scale(1) rotate(-2deg)', opacity: '0.95' },
+                            '100%': { transform: 'scale(1.08) rotate(2deg)', opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(160deg, #FDFEFF 0%, #F2F7FD 55%, #EBF4FE 100%);
+            color: #2D3748;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 玻璃擬態卡片質感（純淨柔和藍調） */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(107, 164, 232, 0.22);
+            box-shadow: 0 12px 32px -8px rgba(43, 108, 176, 0.08);
+        }
+
+        /* 蠟燭火焰光暈 */
+        .flame-glow {
+            filter: drop-shadow(0 0 8px rgba(255, 196, 87, 0.9));
+        }
+
+        /* 煙霧飄散動畫 */
+        @keyframes smokeRise {
+            0% { opacity: 0.75; transform: translateY(0) scale(0.8); }
+            100% { opacity: 0; transform: translateY(-28px) scale(1.6); }
+        }
+        .smoke {
+            animation: smokeRise 1.6s ease-out forwards;
+        }
+
+        /* 禮物兌換券鋸齒邊緣效果（淺藍漸層） */
+        .ticket-border {
+            position: relative;
+            background: linear-gradient(135deg, #F8FBFF 0%, #E1F0FF 100%);
+            border: 2px dashed #6BA4E8;
+        }
+
+        /* 隱藏滾動條但保持可滾動 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8FBFF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9CC5F4;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-roseGold selection:text-white">
+
+    <!-- 頂部微裝飾光暈 -->
+    <div class="fixed top-0 left-0 w-full h-1.5 bg-gradient-to-r from-champagne via-roseGold to-champagne z-40"></div>
+
+    <!-- 主容器 -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <div class="w-full max-w-lg mx-auto">
+
+            <!-- ==========================================
+                 階段 1：封面儀式感（吹蠟燭解鎖）
+                 ========================================== -->
+            <section id="step-cover" class="glass-card rounded-3xl p-6 sm:p-10 text-center animate-fade-in-up">
+                <p class="text-xs tracking-widest text-roseGold font-medium uppercase mb-2">Special Birthday Surprise</p>
+                
+                <!-- 隱藏後台觸發點：連續快速點擊 5 次 -->
+                <h1 id="secret-title" class="font-serif text-3xl sm:text-4xl font-semibold text-charcoal mb-2 cursor-pointer select-none" title="Happy Birthday">
+                    Happy 24th Birthday ✨
+                </h1>
+                <p class="text-sm text-gray-500 mb-6">閉上眼睛許下妳的生日願望，然後吹熄蠟燭吧</p>
+
+                <!-- 精緻淺藍色系生日蛋糕 SVG 插畫 -->
+                <div class="relative w-56 h-56 mx-auto my-4 flex items-center justify-center animate-float">
+                    <svg viewBox="0 0 220 220" class="w-full h-full drop-shadow-md">
+                        <!-- 蛋糕盤子 -->
+                        <ellipse cx="110" cy="188" rx="88" ry="12" fill="#D6E8FA" />
+                        <ellipse cx="110" cy="185" rx="76" ry="9" fill="#FFFFFF" />
+                        
+                        <!-- 下層蛋糕體（柔霧淺藍） -->
+                        <rect x="42" y="132" width="136" height="50" rx="14" fill="#9CC5F4" />
+                        <!-- 下層奶油淋面 -->
+                        <path d="M42 142 Q55 156 68 144 Q82 158 96 144 Q110 158 124 144 Q138 158 152 144 Q165 156 178 142 L178 136 Q178 132 170 132 L50 132 Q42 132 42 136 Z" fill="#FFFFFF" />
+                        
+                        <!-- 上層蛋糕體（冰川奶油藍） -->
+                        <rect x="62" y="90" width="96" height="44" rx="12" fill="#CBE3FC" />
+                        <!-- 上層奶油淋面 -->
+                        <path d="M62 98 Q74 110 86 100 Q98 112 110 100 Q122 112 134 100 Q146 110 158 98 L158 94 Q158 90 150 90 L70 90 Q62 90 62 94 Z" fill="#FFFFFF" />
+
+                        <!-- 裝飾藍莓與糖珠 -->
+                        <circle cx="78" cy="122" r="3" fill="#2B6CB0" />
+                        <circle cx="110" cy="124" r="3" fill="#6BA4E8" />
+                        <circle cx="142" cy="122" r="3" fill="#2B6CB0" />
+                        <circle cx="66" cy="166" r="3.5" fill="#FFFFFF" />
+                        <circle cx="110" cy="168" r="3.5" fill="#FFFFFF" />
+                        <circle cx="154" cy="166" r="3.5" fill="#FFFFFF" />
+
+                        <!-- 蠟燭本體 -->
+                        <rect x="104" y="54" width="12" height="36" rx="4" fill="#FFFFFF" stroke="#6BA4E8" stroke-width="1.5" />
+                        <path d="M104 64 L116 70 M104 74 L116 80" stroke="#6BA4E8" stroke-width="2" stroke-linecap="round" />
+
+                        <!-- 蠟燭燭芯 -->
+                        <line x1="110" y1="48" x2="110" y2="54" stroke="#2D3748" stroke-width="2" stroke-linecap="round" />
+
+                        <!-- 蠟燭火焰（可被吹熄） -->
+                        <g id="candle-flame" class="origin-[110px_46px] animate-flicker flame-glow transition-opacity duration-300">
+                            <path d="M110 22 C118 33 118 45 110 48 C102 45 102 33 110 22 Z" fill="#FFB703" />
+                            <path d="M110 30 C114 36 114 44 110 46 C106 44 106 36 110 30 Z" fill="#FFF3B0" />
+                        </g>
+
+                        <!-- 吹熄後的微煙（預設隱藏） -->
+                        <g id="candle-smoke" class="hidden">
+                            <path d="M110 45 Q104 35 112 25 T108 8" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" class="smoke" />
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- 互動按鈕區 -->
+                <div id="wish-prompt" class="mt-5">
+                    <button onclick="blowCandle()" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-charcoal text-white font-medium shadow-md hover:bg-deepRose active:scale-95 transition-all duration-300">
+                        許好願了，吹熄蠟燭
+                    </button>
+                </div>
+
+                <div id="wish-granted" class="hidden mt-4 animate-fade-in-up">
+                    <p class="text-deepRose font-medium mb-4">願望已傳遞到宇宙，24 歲一定會閃閃發亮！</p>
+                    <button onclick="startQuiz()" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-charcoal text-white font-medium shadow-md hover:bg-deepRose transition-all duration-300">
+                        先來回答一點問題吧 💌
+                    </button>
+                    <button onclick="backToCandle()" class="mt-3 block mx-auto text-xs text-gray-400 hover:text-deepRose transition-colors">
+                        ← 返回上一步
+                    </button>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 階段 2：24歲心願與心情手寫問答
+                 ========================================== -->
+            <section id="step-quiz" class="hidden glass-card rounded-3xl p-6 sm:p-8 transition-all duration-500">
+                <!-- 返回與進度條 -->
+                <div class="flex items-center justify-between text-xs text-gray-400 mb-2">
+                    <button onclick="handleQuizBack()" class="text-gray-400 hover:text-deepRose transition-colors">
+                        ← 返回上一步
+                    </button>
+                    <span id="quiz-step-label" class="text-deepRose font-medium">問題 1 / 3</span>
+                </div>
+                <div class="w-full h-1.5 bg-champagne rounded-full overflow-hidden mb-6">
+                    <div id="quiz-progress-bar" class="h-full bg-roseGold transition-all duration-500 rounded-full" style="width: 33.33%"></div>
+                </div>
+
+                <!-- 題目與輸入區 -->
+                <div id="quiz-content" class="animate-fade-in-up">
+                    <h2 id="quiz-question" class="text-lg sm:text-xl font-bold text-charcoal leading-relaxed mb-2">
+                        題目載入中...
+                    </h2>
+                    <p id="quiz-hint" class="text-xs sm:text-sm text-gray-500 mb-4">
+                        副標題提示
+                    </p>
+                    
+                    <!-- 單一輸入框（一般題目使用） -->
+                    <textarea id="quiz-text-input" rows="4" class="w-full p-4 rounded-2xl bg-cream/70 border border-champagne focus:border-roseGold focus:bg-white focus:outline-none text-sm sm:text-base text-charcoal leading-relaxed transition-all resize-none" placeholder="在這裡寫下妳的心情..."></textarea>
+                    
+                    <!-- 三個獨立輸入框（第二題「今天最開心的三件事」專用） -->
+                    <div id="quiz-three-inputs" class="hidden space-y-2.5">
+                        <div class="flex items-center gap-2.5 bg-cream/70 border border-champagne focus-within:border-roseGold focus-within:bg-white rounded-2xl px-3.5 py-2.5 transition-all">
+                            <span class="w-6 h-6 rounded-full bg-blush text-deepRose text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                            <input type="text" id="quiz-input-1" class="w-full bg-transparent text-sm sm:text-base text-charcoal focus:outline-none" placeholder="Happy">
+                        </div>
+                        <div class="flex items-center gap-2.5 bg-cream/70 border border-champagne focus-within:border-roseGold focus-within:bg-white rounded-2xl px-3.5 py-2.5 transition-all">
+                            <span class="w-6 h-6 rounded-full bg-blush text-deepRose text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                            <input type="text" id="quiz-input-2" class="w-full bg-transparent text-sm sm:text-base text-charcoal focus:outline-none" placeholder="Thrilled">
+                        </div>
+                        <div class="flex items-center gap-2.5 bg-cream/70 border border-champagne focus-within:border-roseGold focus-within:bg-white rounded-2xl px-3.5 py-2.5 transition-all">
+                            <span class="w-6 h-6 rounded-full bg-blush text-deepRose text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                            <input type="text" id="quiz-input-3" class="w-full bg-transparent text-sm sm:text-base text-charcoal focus:outline-none" placeholder="Ecstatic">
+                        </div>
+                    </div>
+                    
+                    <button id="quiz-next-btn" onclick="handleQuizNext()" class="mt-5 w-full py-3.5 rounded-full bg-charcoal text-white font-medium shadow-md hover:bg-deepRose active:scale-95 transition-all duration-300">
+                        下一題
+                    </button>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 階段 3：24歲心願膠囊封存過場（極簡引導版）
+                 ========================================== -->
+            <section id="step-keyword" class="hidden glass-card rounded-3xl p-7 sm:p-10 text-center animate-fade-in-up">
+                <div class="w-16 h-16 rounded-full bg-blush/80 text-deepRose flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner animate-float">
+                    💌
+                </div>
+                <p class="text-xs tracking-widest text-roseGold font-medium uppercase mb-1">24th Birthday Capsule</p>
+                <h2 class="text-xl sm:text-2xl font-bold text-charcoal mb-3">恭喜妳 24 歲啦！</h2>
+
+                <p id="lucky-description" class="text-sm text-gray-600 leading-relaxed mb-7">
+                    <!-- 動態生成暖心祝福 -->
+                </p>
+
+                <button onclick="showModeSelection()" class="w-full py-3.5 rounded-full bg-charcoal text-white font-medium text-base shadow-md hover:bg-deepRose active:scale-95 transition-all duration-300">
+                    挑禮物囉~ 🎁
+                </button>
+                <button onclick="backToLastQuiz()" class="mt-3.5 text-xs text-gray-400 hover:text-deepRose transition-colors">
+                    ← 返回上一步
+                </button>
+            </section>
+
+            <!-- ==========================================
+                 階段 3.5：盲選 vs 看著選 模式抉擇
+                 ========================================== -->
+            <section id="step-mode" class="hidden glass-card rounded-3xl p-6 sm:p-8 text-center animate-fade-in-up">
+                <div class="text-left mb-3">
+                    <button onclick="switchSection('step-mode', 'step-keyword')" class="text-xs text-gray-400 hover:text-deepRose transition-colors">
+                        ← 返回上一步
+                    </button>
+                </div>
+                <span class="inline-block px-3 py-1 rounded-full bg-blush text-deepRose text-xs font-medium mb-2">
+                    Choose Your Style
+                </span>
+                <h2 class="text-xl sm:text-2xl font-bold text-charcoal mb-2">妳想怎麼挑選今天的生日禮物？</h2>
+                <p class="text-xs sm:text-sm text-gray-500 mb-6">兩種方式都藏著為妳準備的驚喜，選一個想要的吧！不要偷看噢</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- 選項 A：盲選神秘禮盒 -->
+                    <div onclick="startGiftSelection('blind')" class="cursor-pointer group rounded-2xl p-5 bg-white border-2 border-champagne hover:border-deepRose hover:bg-blush/20 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col items-center text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-blush/60 group-hover:scale-110 transition-transform flex items-center justify-center text-3xl mb-3">
+                            🎁
+                        </div>
+                        <h3 class="font-bold text-base sm:text-lg text-charcoal mb-1.5">盲選神秘禮盒</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">
+                            把禮物變成未知的驚喜盲盒！憑直覺選出一個命定編號，確認後才會揭曉內容物。
+                        </p>
+                        <span class="mt-4 inline-block text-xs font-medium text-deepRose bg-blush/70 px-3 py-1 rounded-full">
+                            ✨ 享受拆盲盒的刺激感
+                        </span>
+                    </div>
+
+                    <!-- 選項 B：看著清單挑選 -->
+                    <div onclick="startGiftSelection('visible')" class="cursor-pointer group rounded-2xl p-5 bg-white border-2 border-champagne hover:border-deepRose hover:bg-blush/20 transition-all duration-300 shadow-sm hover:shadow-md flex flex-col items-center text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-champagne/60 group-hover:scale-110 transition-transform flex items-center justify-center text-3xl mb-3">
+                            👀
+                        </div>
+                        <h3 class="font-bold text-base sm:text-lg text-charcoal mb-1.5">看著清單挑選</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">
+                            直接公開 4 個候選禮物清單，看清楚名稱與介紹，精準挑出最心動的那一個。
+                        </p>
+                        <span class="mt-4 inline-block text-xs font-medium text-deepRose bg-champagne/80 px-3 py-1 rounded-full">
+                            💖 精準鎖定最想要的禮物
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================
+                 階段 4：最終 4 選 1 禮物決選
+                 ========================================== -->
+            <section id="step-gifts" class="hidden glass-card rounded-3xl p-5 sm:p-8 animate-fade-in-up">
+                <div class="text-left mb-2">
+                    <button onclick="switchSection('step-gifts', 'step-mode')" class="text-xs text-gray-400 hover:text-deepRose transition-colors">
+                        ← 返回上一步
+                    </button>
+                </div>
+                <div class="text-center mb-6">
+                    <div class="flex items-center justify-center mb-2">
+                        <span id="gift-mode-badge" class="inline-block px-3 py-1 rounded-full bg-blush text-deepRose text-xs font-medium">
+                            Final Destiny Choice
+                        </span>
+                    </div>
+                    <h2 id="gift-step-title" class="text-xl sm:text-2xl font-bold text-charcoal">挑選妳最心動的一份禮物</h2>
+                    <p id="gift-step-subtitle" class="text-xs sm:text-sm text-gray-500 mt-1">直覺選出最想帶回家的那一個（只能選一個喔！）</p>
+                </div>
+
+                <!-- 4 張禮物卡片網格 -->
+                <div id="gifts-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
+                    <!-- 動態生成 4 張禮物卡 -->
+                </div>
+
+                <!-- 自己輸入想要禮物的許願區塊 -->
+                <div id="custom-gift-card" onclick="selectCustomGiftCard()" class="cursor-pointer rounded-2xl p-4 sm:p-5 bg-white/90 border-2 border-dashed border-roseGold/50 hover:border-roseGold transition-all duration-200 mb-6 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-2xl bg-blush/60 w-10 h-10 rounded-xl flex items-center justify-center">✍️</span>
+                            <div>
+                                <h3 class="font-bold text-sm sm:text-base text-deepRose">都不想要嗎？自己寫吧！</h3>
+                                <p class="text-[11px] sm:text-xs text-gray-500">許下妳真正最想要的禮物願望 （友情提醒 → 要我可負擔的噢）</p>
+                            </div>
+                        </div>
+                        <span id="custom-check-circle" class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center text-white text-xs transition-colors">✓</span>
+                    </div>
+                    <div id="custom-gift-input-wrapper" class="hidden mt-3 pt-3 border-t border-champagne animate-fade-in-up" onclick="event.stopPropagation()">
+                        <input type="text" id="custom-gift-name" oninput="handleCustomGiftInput()" placeholder="例如：某牌香水、一起去兩天一夜小旅行..." class="w-full px-3.5 py-2.5 rounded-xl border border-roseGold/40 bg-cream text-sm text-charcoal focus:outline-none focus:border-deepRose">
+                    </div>
+                </div>
+
+                <!-- 確認選擇按鈕 -->
+                <button id="confirm-gift-btn" onclick="confirmGiftChoice()" disabled class="w-full py-3.5 rounded-full bg-gray-300 text-white font-medium transition-all duration-300 disabled:cursor-not-allowed">
+                    請先點選上方任一張禮物卡
+                </button>
+            </section>
+
+            <!-- ==========================================
+                 階段 5：專屬生日禮物兌換券
+                 ========================================== -->
+            <section id="step-voucher" class="hidden glass-card rounded-3xl p-6 sm:p-8 text-center animate-fade-in-up">
+                <div class="text-3xl mb-2">🎉</div>
+                <h2 class="text-xl sm:text-2xl font-bold text-charcoal mb-1">生日禮物兌換券已生成！</h2>
+                <p class="text-xs text-gray-500 mb-5">已同步紀錄妳的心願，快傳給送禮人兌換吧</p>
+
+                <!-- 兌換券本體 -->
+                <div id="voucher-card" class="ticket-border rounded-2xl p-6 mb-6 text-left shadow-sm relative overflow-hidden">
+                    <div class="flex justify-between items-start border-b border-roseGold/30 pb-3 mb-3">
+                        <div>
+                            <span class="text-[10px] tracking-widest uppercase text-deepRose font-bold block">24th Birthday Gift</span>
+                            <h3 id="voucher-gift-name" class="text-xl font-bold text-charcoal mt-0.5">禮物名稱</h3>
+                        </div>
+                        <span id="voucher-gift-icon" class="text-3xl">🎁</span>
+                    </div>
+                    
+                    <p id="voucher-gift-desc" class="text-sm text-gray-600 mb-4 leading-relaxed">
+                        禮物描述內容
+                    </p>
+
+                    <div class="bg-white/70 rounded-xl p-3 text-xs space-y-1.5 text-gray-600">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">兌換效期：</span>
+                            <span class="font-medium text-charcoal">我忘記之前 嘻嘻 ✨</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">憑證編號：</span>
+                            <span id="voucher-code" class="font-mono text-gray-500">#BDAY-2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分享與複製按鈕群 -->
+                <div class="space-y-3">
+                    <button onclick="shareToLine()" class="w-full py-3.5 rounded-full bg-[#06C755] hover:bg-[#05b34c] text-white font-medium shadow-md transition-all flex items-center justify-center gap-2 active:scale-95">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+                        <span>用 LINE 傳送兌換券給他</span>
+                    </button>
+
+                    <button onclick="copyVoucherText()" class="w-full py-3 rounded-full bg-white border border-roseGold text-deepRose font-medium hover:bg-blush/30 transition-all flex items-center justify-center gap-2 active:scale-95">
+                        <span>📋 一鍵複製兌換券文字</span>
+                    </button>
+
+                    <div class="flex items-center justify-center gap-4 pt-2">
+                        <button onclick="switchSection('step-voucher', 'step-gifts')" class="text-xs sm:text-sm text-gray-500 hover:text-deepRose transition-colors">
+                            ← 返回上一步
+                        </button>
+                        <span class="text-gray-300">|</span>
+                        <button onclick="restartToHome()" class="text-xs sm:text-sm text-gray-500 hover:text-deepRose transition-colors">
+                            🔄 猶豫了嗎？重選一次，回到主畫面
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- 頁尾極簡版權（完全不放任何管理員按鈕） -->
+    <footer class="text-center py-4 text-[11px] text-gray-400">
+        Made with love for your special day ✨
+    </footer>
+
+    <!-- ==========================================
+         自訂 Toast 提示訊息框（取代 alert）
+         ========================================== -->
+    <div id="toast-msg" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-charcoal/90 text-white text-xs sm:text-sm px-5 py-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-50 whitespace-nowrap">
+        提示訊息
+    </div>
+
+    <!-- ==========================================
+         隱藏後台密碼驗證 Modal
+         ========================================== -->
+    <div id="admin-auth-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-xs text-center shadow-2xl animate-fade-in-up">
+            <div class="text-2xl mb-2">🔐</div>
+            <h3 class="font-bold text-lg text-charcoal mb-1">發起人秘密通道</h3>
+            <p class="text-xs text-gray-500 mb-4">請輸入管理密碼</p>
+            <input type="password" id="admin-password-input" placeholder="輸入密碼" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-center text-lg tracking-widest focus:outline-none focus:border-roseGold mb-4" onkeypress="if(event.key==='Enter') verifyAdminPassword()">
+            <div class="flex gap-2">
+                <button onclick="closeAdminAuth()" class="flex-1 py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium">取消</button>
+                <button onclick="verifyAdminPassword()" class="flex-1 py-2.5 rounded-xl bg-deepRose text-white text-sm font-medium">進入後台</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         完全隱形的發起人後台面板 Modal
+         ========================================== -->
+    <div id="admin-panel-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-fade-in-up">
+            <!-- 後台頂部標題列 -->
+            <div class="px-6 py-4 bg-charcoal text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🛠️</span>
+                    <h3 class="font-bold text-base sm:text-lg">發起人專屬管理後台</h3>
+                </div>
+                <button onclick="closeAdminPanel()" class="text-gray-300 hover:text-white text-xl leading-none p-1">&times;</button>
+            </div>
+
+            <!-- 後台內容滾動區 -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-6 flex-grow">
+                
+                <!-- 區塊 1：壽星作答與選擇紀錄 -->
+                <div class="bg-cream border border-champagne rounded-2xl p-4 sm:p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-bold text-deepRose flex items-center gap-1.5">
+                            <span>📊</span> 壽星作答與最終選擇紀錄
+                        </h4>
+                        <button onclick="resetRecordOnly()" class="text-xs text-gray-400 hover:text-red-500 underline">
+                            清除作答紀錄
+                        </button>
+                    </div>
+                    <div id="admin-record-view" class="text-sm text-gray-600 space-y-2">
+                        <!-- 動態顯示紀錄 -->
+                    </div>
+                </div>
+
+                <!-- 區塊 2：客製化 4 個候選禮物 -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-bold text-charcoal flex items-center gap-1.5">
+                            <span>🎁</span> 自訂 4 個候選禮物清單
+                        </h4>
+                        <span class="text-xs text-gray-400">修改後請點擊下方儲存</span>
+                    </div>
+                    
+                    <div id="admin-gifts-editor" class="space-y-3">
+                        <!-- 動態生成 4 組編輯表單 -->
+                    </div>
+                </div>
+
+                <!-- 區塊 3：後台密碼設定 -->
+                <div class="bg-gray-50 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <span class="text-xs font-bold text-gray-700 block">修改後台管理密碼</span>
+                        <span class="text-[11px] text-gray-400">目前預設為 1126</span>
+                    </div>
+                    <input type="text" id="admin-new-password" placeholder="新密碼" class="px-3 py-1.5 rounded-lg border border-gray-200 text-sm w-full sm:w-36 focus:outline-none focus:border-roseGold">
+                </div>
+
+            </div>
+
+            <!-- 後台底部操作按鈕 -->
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
+                <button onclick="resetAllDefaults()" class="text-xs text-gray-500 hover:text-charcoal">
+                    恢復預設禮物範例
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="closeAdminPanel()" class="px-4 py-2 rounded-full border border-gray-300 text-sm text-gray-600 hover:bg-gray-100">
+                        關閉
+                    </button>
+                    <button onclick="saveAdminSettings()" class="px-6 py-2 rounded-full bg-deepRose text-white text-sm font-medium shadow hover:bg-roseGold transition-colors">
+                        💾 儲存所有設定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. 儲存鍵值與預設禮物資料庫
+        // ==========================================
+        const STORAGE_KEYS = {
+            GIFTS: 'bday_app_gifts_v2',
+            RECORD: 'bday_app_record_v2',
+            PASSWORD: 'bday_app_admin_pwd_v2'
+        };
+
+        const DEFAULT_GIFTS = [
+            { id: 1, icon: '🧧', name: '小紅包', desc: '我今天上班的薪水，all to you！' },
+            { id: 2, icon: '✈️', name: '機票', desc: '不告訴妳去哪，可能未來兌換' },
+            { id: 3, icon: '📈', name: '24股0050', desc: '我的信仰，非常喜歡' },
+            { id: 4, icon: '😋', name: '一頓飯', desc: '自己選要吃哪家，我結帳！' }
+        ];
+
+        function getGifts() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEYS.GIFTS);
+                if (saved) return JSON.parse(saved);
+            } catch (e) {}
+            return DEFAULT_GIFTS;
+        }
+
+        function getAdminPassword() {
+            return localStorage.getItem(STORAGE_KEYS.PASSWORD) || '1126';
+        }
+
+        // ==========================================
+        // 2. 畫面切換與 Toast 提示工具
+        // ==========================================
+        function switchSection(hideId, showId) {
+            const hideEl = document.getElementById(hideId);
+            const showEl = document.getElementById(showId);
+            if (hideEl) hideEl.classList.add('hidden');
+            if (showEl) {
+                showEl.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        let toastTimer = null;
+        function showToast(message) {
+            const toast = document.getElementById('toast-msg');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 2600);
+        }
+
+        // ==========================================
+        // 3. 階段 1：吹蠟燭儀式感邏輯
+        // ==========================================
+        function blowCandle() {
+            const flame = document.getElementById('candle-flame');
+            const smoke = document.getElementById('candle-smoke');
+            const wishPrompt = document.getElementById('wish-prompt');
+            const wishGranted = document.getElementById('wish-granted');
+
+            if (flame) flame.classList.add('opacity-0');
+            setTimeout(() => {
+                if (flame) flame.classList.add('hidden');
+                if (smoke) smoke.classList.remove('hidden');
+            }, 250);
+
+            if (wishPrompt) wishPrompt.classList.add('hidden');
+            if (wishGranted) wishGranted.classList.remove('hidden');
+
+            // 觸發淺藍色系生日彩帶特效
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 90,
+                    spread: 75,
+                    origin: { y: 0.6 },
+                    colors: ['#6BA4E8', '#E1F0FF', '#2B6CB0', '#93C5FD', '#FFFFFF']
+                });
+            }
+        }
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            userQuizAnswers = [];
+            renderQuizQuestion();
+            switchSection('step-cover', 'step-quiz');
+        }
+
+        function backToCandle() {
+            const flame = document.getElementById('candle-flame');
+            const smoke = document.getElementById('candle-smoke');
+            const wishPrompt = document.getElementById('wish-prompt');
+            const wishGranted = document.getElementById('wish-granted');
+
+            if (flame) flame.classList.remove('hidden', 'opacity-0');
+            if (smoke) smoke.classList.add('hidden');
+            if (wishPrompt) wishPrompt.classList.remove('hidden');
+            if (wishGranted) wishGranted.classList.add('hidden');
+        }
+
+        // ==========================================
+        // ★【自訂手寫問答題目區】★
+        // 妳可以直接在下方修改題目(question)、提示(hint)與輸入框預設字(placeholder)！
+        // ==========================================
+        const QUIZ_DATA = [
+            {
+                label: "最近的煩惱",
+                question: "1. 分享一下最近的困擾吧 🌧️",
+                hint: "不管大小事都可以寫下來，把煩惱留在 23 歲，但我也沒辦法，嘻嘻😆",
+                placeholder: "例如：最近有點忙、睡不飽啊啊啊，或是正在糾結某件事..."
+            },
+            {
+                label: "今日份的小確幸",
+                question: "2. 寫出今天最開心的三件事 ☀️",
+                hint: "哪怕只是吃到好吃的甜點、天氣很好，或是收到生日祝福都算喔！",
+                isThreeInputs: true
+            },
+            {
+                label: "24 歲心願清單",
+                question: "3. 24 歲最想做什麼？",
+                hint: "想去的地方、想挑戰的新事物，或是希望自己成為什麼樣子？",
+                placeholder: "例如：想去旅行、學會一項新技能，或是..."
+            }
+        ];
+
+        // 應用程式狀態
+        let currentQuizIndex = 0;
+        let userQuizAnswers = [];
+        let giftSelectionMode = 'visible'; // 'blind' 或 'visible'
+        let selectedGiftId = null;         // 1~4 或 'custom'
+        let finalVoucherData = null;
+
+        // ==========================================
+        // 4. 階段 2 & 3：手寫問答與 24 歲心願膠囊
+        // ==========================================
+        function renderQuizQuestion() {
+            const total = QUIZ_DATA.length;
+            const currentData = QUIZ_DATA[currentQuizIndex];
+            const prevAnswer = userQuizAnswers[currentQuizIndex] ? userQuizAnswers[currentQuizIndex].answerText : '';
+
+            document.getElementById('quiz-step-label').textContent = `問題 ${currentQuizIndex + 1} / ${total}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQuizIndex + 1) / total) * 100}%`;
+            document.getElementById('quiz-question').textContent = currentData.question;
+            document.getElementById('quiz-hint').textContent = currentData.hint || '';
+
+            const singleInputEl = document.getElementById('quiz-text-input');
+            const threeInputsEl = document.getElementById('quiz-three-inputs');
+
+            if (currentData.isThreeInputs) {
+                singleInputEl.classList.add('hidden');
+                threeInputsEl.classList.remove('hidden');
+                const lines = prevAnswer ? prevAnswer.split('\n') : [];
+                document.getElementById('quiz-input-1').value = lines[0] ? lines[0].replace(/^1\.\s*/, '') : '';
+                document.getElementById('quiz-input-2').value = lines[1] ? lines[1].replace(/^2\.\s*/, '') : '';
+                document.getElementById('quiz-input-3').value = lines[2] ? lines[2].replace(/^3\.\s*/, '') : '';
+                setTimeout(() => document.getElementById('quiz-input-1').focus(), 150);
+            } else {
+                threeInputsEl.classList.add('hidden');
+                singleInputEl.classList.remove('hidden');
+                singleInputEl.placeholder = currentData.placeholder || '在這裡寫下妳的想法...';
+                singleInputEl.value = prevAnswer;
+                setTimeout(() => singleInputEl.focus(), 150);
+            }
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.textContent = currentQuizIndex + 1 < total ? 'Next' : '完成啦~ 💌';
+        }
+
+        function handleQuizBack() {
+            if (currentQuizIndex > 0) {
+                currentQuizIndex--;
+                renderQuizQuestion();
+            } else {
+                switchSection('step-quiz', 'step-cover');
+            }
+        }
+
+        function backToLastQuiz() {
+            currentQuizIndex = QUIZ_DATA.length - 1;
+            renderQuizQuestion();
+            switchSection('step-keyword', 'step-quiz');
+        }
+
+        function handleQuizNext() {
+            const currentData = QUIZ_DATA[currentQuizIndex];
+            let answerText = '';
+
+            if (currentData.isThreeInputs) {
+                const v1 = document.getElementById('quiz-input-1').value.trim();
+                const v2 = document.getElementById('quiz-input-2').value.trim();
+                const v3 = document.getElementById('quiz-input-3').value.trim();
+
+                if (!v1 || !v2 || !v3) {
+                    showToast('☀️ 請把三件開心的小事都填滿喔！');
+                    if (!v1) document.getElementById('quiz-input-1').focus();
+                    else if (!v2) document.getElementById('quiz-input-2').focus();
+                    else document.getElementById('quiz-input-3').focus();
+                    return;
+                }
+                answerText = `1. ${v1}\n2. ${v2}\n3. ${v3}`;
+            } else {
+                const inputEl = document.getElementById('quiz-text-input');
+                answerText = inputEl.value.trim();
+                if (!answerText) {
+                    showToast('✍️ 先寫下一點點心情再繼續吧！');
+                    inputEl.focus();
+                    return;
+                }
+            }
+
+            userQuizAnswers[currentQuizIndex] = {
+                label: currentData.label,
+                question: currentData.question,
+                answerText: answerText
+            };
+
+            if (currentQuizIndex + 1 < QUIZ_DATA.length) {
+                currentQuizIndex++;
+                const quizContent = document.getElementById('quiz-content');
+                quizContent.classList.remove('animate-fade-in-up');
+                void quizContent.offsetWidth;
+                quizContent.classList.add('animate-fade-in-up');
+                renderQuizQuestion();
+            } else {
+                showLuckyKeywords();
+            }
+        }
+
+        function showLuckyKeywords() {
+            document.getElementById('lucky-description').textContent = '所有的煩惱都會慢慢散去，而妳寫下的快樂與 24 歲願望，都會一一實現的！接下來，準備好迎接妳的專屬驚喜了嗎？💙';
+            switchSection('step-quiz', 'step-keyword');
+        }
+
+        // 進入盲選 vs 看著選的抉擇畫面
+        function showModeSelection() {
+            switchSection('step-keyword', 'step-mode');
+        }
+
+        // ==========================================
+        // 5. 階段 4：最終 4 選 1 禮物決選（支援盲選／公開／自訂許願）
+        // ==========================================
+        function startGiftSelection(mode) {
+            giftSelectionMode = mode;
+            selectedGiftId = null;
+
+            // 重置自訂許願卡片狀態
+            document.getElementById('custom-gift-name').value = '';
+            document.getElementById('custom-gift-input-wrapper').classList.add('hidden');
+            updateCustomCardVisual(false);
+
+            // 更新標題與提示文案
+            const badge = document.getElementById('gift-mode-badge');
+            const title = document.getElementById('gift-step-title');
+            const subtitle = document.getElementById('gift-step-subtitle');
+
+            if (mode === 'blind') {
+                badge.textContent = '🎁 盲選神秘禮盒模式';
+                title.textContent = '憑直覺挑選一個命定盲盒';
+                subtitle.textContent = '四個盒子裡各藏著一份專屬驚喜，確認打開後才會揭曉喔！';
+            } else {
+                badge.textContent = '👀 公開清單挑選模式';
+                title.textContent = '挑選妳的禮物';
+                subtitle.textContent = '選出最想要的那一個（不要算啊啊啊！）';
+            }
+
+            renderGiftCards();
+            updateConfirmButtonState();
+            switchSection('step-mode', 'step-gifts');
+        }
+
+        function renderGiftCards() {
+            const gifts = getGifts();
+            const grid = document.getElementById('gifts-grid');
+            grid.innerHTML = '';
+
+            const blindLabels = ['命定盲盒 No.1', '神秘驚喜 No.2', '幸運寶盒 No.3', '滿足禮盒 No.4'];
+            const blindIcons = ['🎁', '🪎', '🧧', '🪄'];
+
+            gifts.forEach((gift, idx) => {
+                const isSelected = selectedGiftId === gift.id;
+                const card = document.createElement('div');
+                card.className = `cursor-pointer rounded-2xl p-4 sm:p-5 transition-all duration-200 border-2 flex flex-col justify-between ${
+                    isSelected
+                        ? 'bg-blush/50 border-deepRose shadow-md scale-[1.01]'
+                        : 'bg-white/95 border-champagne hover:border-roseGold shadow-sm'
+                }`;
+                card.onclick = () => selectPresetGift(gift.id);
+
+                const displayIcon = giftSelectionMode === 'blind' ? blindIcons[idx % 4] : gift.icon;
+                const displayName = giftSelectionMode === 'blind' ? blindLabels[idx % 4] : gift.name;
+                const displayDesc = giftSelectionMode === 'blind'
+                    ? '內容物已封印 ✨ 點擊選定並確認後，立即為妳揭曉專屬大禮！'
+                    : gift.desc;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2.5">
+                            <span class="text-2xl sm:text-3xl bg-cream w-11 h-11 rounded-xl flex items-center justify-center border border-champagne">${displayIcon}</span>
+                            <span class="w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs transition-colors ${
+                                isSelected ? 'bg-deepRose border-deepRose text-white' : 'border-gray-200 text-transparent'
+                            }">✓</span>
+                        </div>
+                        <h3 class="font-bold text-base text-charcoal mb-1">${displayName}</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">${displayDesc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function selectPresetGift(giftId) {
+            selectedGiftId = giftId;
+            document.getElementById('custom-gift-input-wrapper').classList.add('hidden');
+            updateCustomCardVisual(false);
+            renderGiftCards();
+            updateConfirmButtonState();
+        }
+
+        function selectCustomGiftCard() {
+            selectedGiftId = 'custom';
+            renderGiftCards();
+            updateCustomCardVisual(true);
+            const wrapper = document.getElementById('custom-gift-input-wrapper');
+            wrapper.classList.remove('hidden');
+            const input = document.getElementById('custom-gift-name');
+            input.focus();
+            updateConfirmButtonState();
+        }
+
+        function handleCustomGiftInput() {
+            if (selectedGiftId !== 'custom') {
+                selectedGiftId = 'custom';
+                renderGiftCards();
+                updateCustomCardVisual(true);
+            }
+            updateConfirmButtonState();
+        }
+
+        function updateCustomCardVisual(isSelected) {
+            const card = document.getElementById('custom-gift-card');
+            const circle = document.getElementById('custom-check-circle');
+            if (isSelected) {
+                card.classList.remove('border-roseGold/50', 'bg-white/90');
+                card.classList.add('border-deepRose', 'bg-blush/40', 'shadow-md');
+                circle.classList.remove('border-gray-200');
+                circle.classList.add('bg-deepRose', 'border-deepRose');
+            } else {
+                card.classList.add('border-roseGold/50', 'bg-white/90');
+                card.classList.remove('border-deepRose', 'bg-blush/40', 'shadow-md');
+                circle.classList.add('border-gray-200');
+                circle.classList.remove('bg-deepRose', 'border-deepRose');
+            }
+        }
+
+        function updateConfirmButtonState() {
+            const btn = document.getElementById('confirm-gift-btn');
+            let isValid = false;
+
+            if (selectedGiftId === 'custom') {
+                const customVal = document.getElementById('custom-gift-name').value.trim();
+                isValid = customVal.length > 0;
+                btn.textContent = isValid ? '確認送出' : '請輸入妳想要的禮物名稱';
+            } else if (selectedGiftId !== null) {
+                isValid = true;
+                btn.textContent = giftSelectionMode === 'blind' ? '🎁 確認揭曉這個神秘盲盒！' : '💖 確認就選這份生日禮物！';
+            } else {
+                btn.textContent = '請先點選上方任一張禮物卡';
+            }
+
+            btn.disabled = !isValid;
+            if (isValid) {
+                btn.className = 'w-full py-3.5 rounded-full bg-charcoal text-white font-medium shadow-md hover:bg-deepRose active:scale-95 transition-all duration-300';
+            } else {
+                btn.className = 'w-full py-3.5 rounded-full bg-gray-300 text-white font-medium transition-all duration-300 disabled:cursor-not-allowed';
+            }
+        }
+
+        function confirmGiftChoice() {
+            let chosenGift = null;
+            let modeLabel = '';
+
+            if (selectedGiftId === 'custom') {
+                const customName = document.getElementById('custom-gift-name').value.trim();
+                if (!customName) {
+                    showToast('請先填寫妳想要的禮物喔！');
+                    return;
+                }
+                chosenGift = {
+                    icon: '✍️',
+                    name: customName,
+                    desc: '壽星許下的生日願望，獨一無二！'
+                };
+                modeLabel = '壽星自訂許願';
+            } else {
+                const gifts = getGifts();
+                chosenGift = gifts.find(g => g.id === selectedGiftId);
+                modeLabel = giftSelectionMode === 'blind' ? '盲選神秘禮盒' : '看著清單挑選';
+            }
+
+            if (!chosenGift) return;
+
+            const lastWish = userQuizAnswers.length > 0 ? userQuizAnswers[userQuizAnswers.length - 1].answerText : '24歲天天開心';
+            const wishSummary = lastWish.replace(/\n/g, ' ');
+            const voucherCode = `#BDAY24-${Math.floor(1000 + Math.random() * 9000)}`;
+            const timestamp = new Date().toLocaleString('zh-TW', { hour12: false });
+
+            finalVoucherData = {
+                gift: chosenGift,
+                modeLabel: modeLabel,
+                keywords: wishSummary,
+                code: voucherCode,
+                quizAnswers: userQuizAnswers,
+                timestamp: timestamp
+            };
+
+            // 存入 localStorage 供隱藏後台檢視
+            try {
+                localStorage.setItem(STORAGE_KEYS.RECORD, JSON.stringify(finalVoucherData));
+            } catch (e) {
+                console.warn('無法寫入 localStorage', e);
+            }
+
+            // 渲染兌換券內容
+            document.getElementById('voucher-gift-name').textContent = chosenGift.name;
+            document.getElementById('voucher-gift-icon').textContent = chosenGift.icon;
+            document.getElementById('voucher-gift-desc').textContent = chosenGift.desc;
+            document.getElementById('voucher-code').textContent = voucherCode;
+
+            switchSection('step-gifts', 'step-voucher');
+
+            // 觸發慶祝彩帶
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 110,
+                    spread: 85,
+                    origin: { y: 0.55 },
+                    colors: ['#6BA4E8', '#E1F0FF', '#2B6CB0', '#93C5FD', '#FFFFFF']
+                });
+            }
+        }
+
+        // ==========================================
+        // 6. 階段 5：兌換券分享、複製與重選重置
+        // ==========================================
+        function buildShareMessage() {
+            if (!finalVoucherData) return '';
+            const answersText = (finalVoucherData.quizAnswers || [])
+                .map(item => `【${item.label}】\n${item.answerText}`)
+                .join('\n\n');
+
+            return [
+                `🎂 Happy 24th Birthday 生日禮物兌換券 🎂`,
+                `憑證編號：${finalVoucherData.code}`,
+                `挑選方式：${finalVoucherData.modeLabel}`,
+                `命定禮物：${finalVoucherData.gift.icon} ${finalVoucherData.gift.name}`,
+                `------------------------`,
+                `💌 24 歲心願樹洞筆記：`,
+                answersText,
+                `------------------------`,
+                `請憑此訊息向送禮人兌換生日大禮 ✨`
+            ].join('\n');
+        }
+
+        function shareToLine() {
+            const text = buildShareMessage();
+            if (!text) return;
+            const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
+            window.open(lineUrl, '_blank');
+        }
+
+        function copyVoucherText() {
+            const text = buildShareMessage();
+            if (!text) return;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('📋 已複製兌換券與心願內容，快貼上傳送吧！');
+            } catch (err) {
+                showToast('複製失敗，請手動截圖保存喔！');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function restartToHome() {
+            // 重置狀態
+            currentQuizIndex = 0;
+            userQuizAnswers = [];
+            selectedGiftId = null;
+            finalVoucherData = null;
+
+            // 重新點亮蠟燭與重置封面按鈕
+            const flame = document.getElementById('candle-flame');
+            const smoke = document.getElementById('candle-smoke');
+            const wishPrompt = document.getElementById('wish-prompt');
+            const wishGranted = document.getElementById('wish-granted');
+
+            if (flame) {
+                flame.classList.remove('hidden', 'opacity-0');
+            }
+            if (smoke) {
+                smoke.classList.add('hidden');
+            }
+            if (wishPrompt) {
+                wishPrompt.classList.remove('hidden');
+            }
+            if (wishGranted) {
+                wishGranted.classList.add('hidden');
+            }
+
+            switchSection('step-voucher', 'step-cover');
+            showToast('✨ 已回到主畫面，隨時可以重新許願與挑選禮物！');
+        }
+
+        // ==========================================
+        // 7. 完全隱形的發起人後台邏輯
+        // ==========================================
+        let titleClickCount = 0;
+        let titleClickTimer = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 監聽主標題連續快速點擊 5 次
+            const secretTitle = document.getElementById('secret-title');
+            if (secretTitle) {
+                secretTitle.addEventListener('click', () => {
+                    titleClickCount++;
+                    clearTimeout(titleClickTimer);
+                    if (titleClickCount >= 5) {
+                        titleClickCount = 0;
+                        openAdminAuth();
+                    } else {
+                        titleClickTimer = setTimeout(() => {
+                            titleClickCount = 0;
+                        }, 1500);
+                    }
+                });
+            }
+
+            // 支援網址參數 ?admin=1 直接開啟密碼驗證
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('admin') === '1') {
+                openAdminAuth();
+            }
+        });
+
+        function openAdminAuth() {
+            const modal = document.getElementById('admin-auth-modal');
+            const input = document.getElementById('admin-password-input');
+            if (modal) modal.classList.remove('hidden');
+            if (input) {
+                input.value = '';
+                setTimeout(() => input.focus(), 100);
+            }
+        }
+
+        function closeAdminAuth() {
+            const modal = document.getElementById('admin-auth-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const input = document.getElementById('admin-password-input');
+            const entered = input ? input.value.trim() : '';
+            if (entered === getAdminPassword()) {
+                closeAdminAuth();
+                openAdminPanel();
+            } else {
+                showToast('❌ 密碼錯誤，請再試一次');
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+            }
+        }
+
+        function openAdminPanel() {
+            renderAdminRecord();
+            renderAdminGiftsEditor();
+            document.getElementById('admin-new-password').value = '';
+            document.getElementById('admin-panel-modal').classList.remove('hidden');
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('admin-panel-modal').classList.add('hidden');
+        }
+
+        function renderAdminRecord() {
+            const container = document.getElementById('admin-record-view');
+            let record = null;
+            try {
+                const raw = localStorage.getItem(STORAGE_KEYS.RECORD);
+                if (raw) record = JSON.parse(raw);
+            } catch (e) {}
+
+            if (!record) {
+                container.innerHTML = `<p class="text-xs text-gray-400 py-2">目前尚未有壽星的作答與選禮紀錄喔！（當她完成選擇後會自動同步至此）</p>`;
+                return;
+            }
+
+            const answersHtml = (record.quizAnswers || []).map(ans => `
+                <div class="bg-white rounded-xl p-3 border border-champagne/70">
+                    <div class="text-xs font-bold text-deepRose mb-1">${ans.label}</div>
+                    <div class="text-xs text-gray-700 whitespace-pre-line">${ans.answerText}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="bg-white rounded-xl p-3.5 border border-roseGold/40 space-y-1.5">
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span>時間：${record.timestamp || ''}</span>
+                        <span class="font-mono">${record.code || ''}</span>
+                    </div>
+                    <div class="text-sm font-bold text-charcoal">
+                        最終選擇：${record.gift.icon} ${record.gift.name}
+                        <span class="ml-1.5 text-[11px] font-normal px-2 py-0.5 rounded-full bg-blush text-deepRose">${record.modeLabel || ''}</span>
+                    </div>
+                    <p class="text-xs text-gray-500">${record.gift.desc}</p>
+                </div>
+                <div class="space-y-2 pt-1">
+                    ${answersHtml}
+                </div>
+            `;
+        }
+
+        function renderAdminGiftsEditor() {
+            const gifts = getGifts();
+            const container = document.getElementById('admin-gifts-editor');
+            container.innerHTML = gifts.map((gift, index) => `
+                <div class="bg-gray-50 rounded-2xl p-3.5 border border-gray-200 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-gray-400 w-12">禮物 ${index + 1}</span>
+                        <input type="text" id="edit-gift-icon-${gift.id}" value="${gift.icon}" class="w-12 text-center py-1.5 rounded-lg border border-gray-200 bg-white text-base focus:outline-none focus:border-roseGold" placeholder="圖示">
+                        <input type="text" id="edit-gift-name-${gift.id}" value="${gift.name}" class="flex-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-sm font-medium focus:outline-none focus:border-roseGold" placeholder="禮物名稱">
+                    </div>
+                    <input type="text" id="edit-gift-desc-${gift.id}" value="${gift.desc}" class="w-full px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:border-roseGold" placeholder="簡短禮物介紹">
+                </div>
+            `).join('');
+        }
+
+        function saveAdminSettings() {
+            const currentGifts = getGifts();
+            const updatedGifts = currentGifts.map(g => {
+                const iconVal = document.getElementById(`edit-gift-icon-${g.id}`).value.trim() || g.icon;
+                const nameVal = document.getElementById(`edit-gift-name-${g.id}`).value.trim() || g.name;
+                const descVal = document.getElementById(`edit-gift-desc-${g.id}`).value.trim() || g.desc;
+                return { id: g.id, icon: iconVal, name: nameVal, desc: descVal };
+            });
+
+            try {
+                localStorage.setItem(STORAGE_KEYS.GIFTS, JSON.stringify(updatedGifts));
+                const newPwd = document.getElementById('admin-new-password').value.trim();
+                if (newPwd) {
+                    localStorage.setItem(STORAGE_KEYS.PASSWORD, newPwd);
+                }
+                showToast('✅ 所有禮物設定與密碼已儲存！');
+                closeAdminPanel();
+            } catch (e) {
+                showToast('儲存失敗，請確認瀏覽器儲存權限');
+            }
+        }
+
+        function resetRecordOnly() {
+            localStorage.removeItem(STORAGE_KEYS.RECORD);
+            renderAdminRecord();
+            showToast('🗑️ 已清除壽星作答紀錄');
+        }
+
+        function resetAllDefaults() {
+            localStorage.setItem(STORAGE_KEYS.GIFTS, JSON.stringify(DEFAULT_GIFTS));
+            renderAdminGiftsEditor();
+            showToast('🔄 已恢復為預設 4 個禮物範例');
+        }
+    </script>
+</body>
+</html>
